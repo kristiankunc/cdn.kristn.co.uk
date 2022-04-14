@@ -10,6 +10,17 @@ initialize_app(cred, {"storageBucket": "kristn-cdn.appspot.com"})
 with open("./creds/token.txt", "r") as f:
     token = f.read()
 
+def genFilename():
+    filename = "".join(random.choice(string.ascii_lowercase + string.digits) for _ in range(5))
+
+    bucket = storage.bucket()
+    blob = bucket.blob(filename)
+
+    if blob:
+        return genFilename()
+    else:
+        return filename
+
 @app.route("/upload", methods=["POST"])
 def index():
     if "Authorization" in request.headers and "file" in request.files:
@@ -18,7 +29,7 @@ def index():
 
         if user_token == token:
             
-            filename = "".join(random.choice(string.ascii_lowercase + string.digits) for _ in range(5))
+            filename = genFilename()
 
             bucket = storage.bucket()
             blob = bucket.blob(filename)
@@ -35,7 +46,24 @@ def index():
 
 @app.route("/i/<filename>", methods=["GET"])
 def image(filename):
-    return render_template("embed.html", filename=filename, url=f"https://cdn.kristn.co.uk/i/{filename}", img_url=f"https://storage.googleapis.com/kristn-cdn.appspot.com/{filename}")
+    bucket = storage.bucket()
+    blob = bucket.get_blob(filename)
+
+    if blob:
+        t = blob.time_created
+
+        metadata = {
+            "filename": blob.name,
+            "size": f"{round(blob.size/1024, 2)} KB",
+            "content_type": blob.content_type,
+            "time_created": f"{t.day}.{t.month}.{t.year} {t.hour}:{t.minute}:{t.second}",
+        }
+
+        print(metadata)
+
+        return render_template("preview.html", metadata=metadata)
+    else:
+        return jsonify({"message": "404 Not Found, file not found"}), 404
 
     
 if __name__ == "__main__":

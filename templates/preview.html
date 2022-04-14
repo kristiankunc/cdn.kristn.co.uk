@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+    <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
+
+    <meta content="{{ metadata['filename'] }}" property="og:title"/>
+    <meta content="https://cdn.kristn.co.uk/i/{{metadata['filename']}}" property="og:url"/>
+    <meta content="https://storage.googleapis.com/kristn-cdn.appspot.com/{{ metadata['filename'] }}" property="og:image"/>
+    <meta content="image/jpeg" property="og:image:type"/>
+    <meta content=" " property="og:description"/>
+
+    <meta property="twitter:card" content="summary_large_image"/>
+    <meta property="twitter:image" content="https://storage.googleapis.com/kristn-cdn.appspot.com/{{ metadata['filename'] }}"/>
+
+    <meta content="#fd4c4c" data-react-helmet="true" name="theme-color"/>
+</head>
+
+<body>
+<div class="container">
+
+    <div class="header">
+        <div class="title-div">
+            <div class="title">{{ metadata['filename'] }}</div>
+        </div>
+        <div class="button-div">
+            <button class="button">View original</button>
+        </div>
+    </div>
+
+
+    <div class="img-container">
+        <img src="https://storage.googleapis.com/kristn-cdn.appspot.com/{{ metadata['filename'] }}" alt="{{ metadata['filename'] }}" class="center">
+    </div>
+
+    <div class="footer">
+        <div class="img-info">
+            <div>Name: {{ metadata['filename'] }}</div>
+            <div>Size: {{ metadata['size'] }}</div>
+            <div>Type: {{ metadata['content_type'] }}</div>
+            <div>Uploaded at: {{ metadata['time_created'] }}</div>
+        </div>
+    </div>
+
+    <script>
+        var button = document.querySelector(".button");
+        button.addEventListener("click", function () {
+            window.location.href = "https://storage.googleapis.com/kristn-cdn.appspot.com/{{ metadata['filename'] }}";
+        });
+    </script>
+</body>
+</html>
