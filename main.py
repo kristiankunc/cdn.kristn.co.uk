@@ -16,10 +16,10 @@ def genFilename():
     bucket = storage.bucket()
     blob = bucket.blob(filename)
 
-    if blob:
-        return genFilename()
-    else:
+    if not blob.exists():
         return filename
+    else:
+        return genFilename()
 
 @app.route("/upload", methods=["POST"])
 def index():
