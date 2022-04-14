@@ -1,44 +1,47 @@
 html, body {
-    height: 100%;
+    height: 100vh;
+    width: 100vw;
     margin: 0;
     font-family: sans-serif;
     color: white;
     background-color: #1F2128;
+    overflow-x: hidden;
+}
+
+.container{
+    height: 100%;
+    width: 100%;
 }
 
 .header {
-    padding: 15px;
+    padding: 0 15px;
+    height: 10%;
     background-color: #2D313A;
-
     display: flex;
     flex-direction: row;
     justify-content: space-between;
 	align-items: center;
 }
 
-.img {
-    max-height: 100vh;
+.img-container {
+    height: 70%;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.center {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+img{
+    width: auto;
+    max-height: 100%;
 }
 
-.img-info {
-    padding: 15px;
+.footer {
+    padding: 0 15px;
+    height: 20%;
     background-color: #2D313A;
     position: absolute;
     width: 100%;
-
-	display: flex;
-    flex-direction: column;
-	justify-content: space-between;
-	align-items: center;
-	align-content: center;
-	flex-wrap: wrap;
+    display: grid;
+    place-content: center;
+    text-align: center;
 }
