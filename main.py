@@ -1,6 +1,6 @@
 import random
 import string
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect
 from firebase_admin import credentials, initialize_app, storage
 
 app = Flask(__name__)
@@ -63,7 +63,7 @@ def image(filename):
 
         return render_template("preview.html", metadata=metadata)
     else:
-        return jsonify({"message": "404 Not Found, file not found"}), 404
+        return redirect("https://shattereddisk.github.io/rickroll/rickroll.mp4")
 
     
 if __name__ == "__main__":
