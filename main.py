@@ -32,7 +32,7 @@ def index():
     })
 
 @app.route("/upload", methods=["POST"])
-def index():
+def upload():
     if "Authorization" in request.headers and "file" in request.files:
         user_token = request.headers["Authorization"]
         uploaded_file = request.files["file"]
