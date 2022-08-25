@@ -4,6 +4,7 @@ from flask import Flask, render_template, request, jsonify, redirect
 from firebase_admin import credentials, initialize_app, storage
 
 app = Flask(__name__)
+app.config['JSON_SORT_KEYS'] = False
 cred = credentials.Certificate("./creds/kristn-cdn-firebase-adminsdk.json")
 initialize_app(cred, {"storageBucket": "kristn-cdn.appspot.com"})
 
