@@ -29,7 +29,6 @@ def index():
     return jsonify({
         "status": "ok",
         "total_files": len(list(bucket.list_blobs())),
-        "last_uploaded": list(bucket.list_blobs())[-1].time_created.strftime("%Y-%m-%d %H:%M:%S")
     })
 
 @app.route("/upload", methods=["POST"])
