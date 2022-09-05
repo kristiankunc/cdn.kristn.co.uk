@@ -66,7 +66,7 @@ def image(filename):
             "filename": blob.name,
             "size": f"{round(blob.size/1024, 2)} KB",
             "content_type": blob.content_type,
-            "time_created": f"{t.day}.{t.month}.{t.year} {t.hour}:{t.minute}:{t.second}",
+            "time_created": blob.time_created.strftime("%d.%m.%Y %H:%M:%S"),
         }
 
         print(metadata)
