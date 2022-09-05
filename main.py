@@ -60,16 +60,20 @@ def image(filename):
     blob = bucket.get_blob(filename)
 
     if blob:
-        t = blob.time_created
+        kb = blob.size / 1024
+        mb = kb / 1024
+
+        if mb < 0.1:
+            size = f"{kb:.2f} KB"
+        else:
+            size = f"{mb:.2f} MB"
 
         metadata = {
             "filename": blob.name,
-            "size": f"{round(blob.size/1024, 2)} KB",
+            "size": size,
             "content_type": blob.content_type,
             "time_created": blob.time_created.strftime("%d.%m.%Y %H:%M:%S"),
         }
-
-        print(metadata)
 
         return render_template("preview.html", metadata=metadata)
     else:
