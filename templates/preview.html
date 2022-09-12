@@ -4,7 +4,7 @@
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
     <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
 
-    <meta content="Kristián's private CDN - {{ metadata['filename'] }}" property="og:title"/>
+    <meta content="Kristián wasted {{ metadata['size'] }} of storage with this image" property="og:title"/>
     <meta content="https://cdn.kristn.co.uk/i/{{metadata['filename']}}" property="og:url"/>
     <meta content="https://storage.googleapis.com/kristn-cdn.appspot.com/{{ metadata['filename'] }}" property="og:image"/>
     <meta content="image/jpeg" property="og:image:type"/>
