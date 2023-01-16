@@ -11,8 +11,10 @@ initialize_app(cred, {"storageBucket": "kristn-cdn.appspot.com"})
 with open("./creds/token.txt", "r") as f:
     token = f.read()
 
+
 def genFilename():
-    filename = "".join(random.choice(string.ascii_lowercase + string.digits) for _ in range(5))
+    filename = "".join(random.choice(
+        string.ascii_lowercase + string.digits) for _ in range(5))
 
     bucket = storage.bucket()
     blob = bucket.blob(filename)
@@ -22,6 +24,7 @@ def genFilename():
     else:
         return genFilename()
 
+
 @app.route("/", methods=["GET"])
 def index():
     bucket = storage.bucket()
@@ -29,7 +32,9 @@ def index():
     return jsonify({
         "status": "ok",
         "total_files": len(list(bucket.list_blobs())),
+        "total_size": f"{sum([blob.size for blob in bucket.list_blobs()]) / 1024 / 1024:.2f} MB",
     })
+
 
 @app.route("/upload", methods=["POST"])
 def upload():
@@ -38,13 +43,14 @@ def upload():
         uploaded_file = request.files["file"]
 
         if user_token == token:
-            
+
             filename = genFilename()
 
             bucket = storage.bucket()
             blob = bucket.blob(filename)
-            blob.upload_from_file(uploaded_file, content_type=uploaded_file.content_type)
-            
+            blob.upload_from_file(
+                uploaded_file, content_type=uploaded_file.content_type)
+
             blob.make_public()
 
             return jsonify({"success": True, "filename": filename, "file_url": blob.public_url, "url": f"https://cdn.kristn.co.uk/i/{filename}"})
@@ -53,6 +59,7 @@ def upload():
             return jsonify({"message": "403 Forbidden, invalid token"}), 403
     else:
         return jsonify({"message": "400 Forbidden, token or file missing"}), 400
+
 
 @app.route("/i/<filename>", methods=["GET"])
 def image(filename):
@@ -79,7 +86,7 @@ def image(filename):
     else:
         return redirect("https://shattereddisk.github.io/rickroll/rickroll.mp4")
 
-    
+
 if __name__ == "__main__":
     from waitress import serve
     print(f"Running\nhttp://localhost:5000")
