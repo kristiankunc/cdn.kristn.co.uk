@@ -33,6 +33,8 @@ def index():
         "status": "ok",
         "total_files": len(list(bucket.list_blobs())),
         "total_size": f"{sum([blob.size for blob in bucket.list_blobs()]) / 1024 / 1024:.2f} MB",
+        "upload_img": "https://cdn.kristn.co.uk/upload",
+        "upload_file": "https://cdn.kristn.co.uk/file/upload",
     })
 
 
@@ -85,6 +87,38 @@ def image(filename):
         return render_template("preview.html", metadata=metadata)
     else:
         return redirect("https://shattereddisk.github.io/rickroll/rickroll.mp4")
+
+
+@app.route("/file/<filename>", methods=["GET"])
+def file(filename):
+    bucket = storage.bucket()
+    blob = bucket.get_blob(filename)
+
+    if blob:
+        return redirect(f"https://storage.googleapis.com/kristn-cdn.appspot.com/{filename}")
+    else:
+        return jsonify({"message": "404 Not Found, file not found"}), 404
+
+
+@app.route("/file/upload", methods=["GET", "POST"])
+def file_upload():
+    if request.method == "GET":
+        return render_template("file-upload.html")
+
+    elif request.method == "POST":
+        if request.form["password"] == token:
+            uploaded_file = request.files["file"]
+
+            bucket = storage.bucket()
+            blob = bucket.blob(uploaded_file.filename)
+            blob.upload_from_file(
+                uploaded_file, content_type=uploaded_file.content_type)
+
+            blob.make_public()
+
+            return jsonify({"success": True, "filename": uploaded_file.filename, "file_url": blob.public_url, "url": f"https://cdn.kristn.co.uk/file/{uploaded_file.filename}"})
+        else:
+            return jsonify({"message": "403 Forbidden, invalid token"}), 403
 
 
 if __name__ == "__main__":
