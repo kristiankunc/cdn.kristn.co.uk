@@ -2,11 +2,13 @@ import random
 import string
 from flask import Flask, render_template, request, jsonify, redirect
 from firebase_admin import credentials, initialize_app, storage
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
 cred = credentials.Certificate("./creds/kristn-cdn-firebase-adminsdk.json")
 initialize_app(cred, {"storageBucket": "kristn-cdn.appspot.com"})
+last_ran = 0
 
 with open("./creds/token.txt", "r") as f:
     token = f.read()
@@ -119,6 +121,18 @@ def file_upload():
             return jsonify({"success": True, "filename": uploaded_file.filename, "file_url": blob.public_url, "url": f"https://cdn.kristn.co.uk/file/{uploaded_file.filename}"})
         else:
             return jsonify({"message": "403 Forbidden, invalid token"}), 403
+
+
+@app.after_request
+def after_request_callback(response):
+    if last_ran + 86400 < datetime.datetime.now():
+        last_ran = datetime.datetime.time()
+        bucket = storage.bucket()
+        for blob in bucket.list_blobs():
+            # check if blob is image
+            if blob.content_type.startswith("image/") or blob.content_type.startswith("application/octet-stream"):
+                if blob.time_created + datetime.timedelta(days=14) < datetime.datetime.now():
+                    blob.delete()
 
 
 if __name__ == "__main__":
